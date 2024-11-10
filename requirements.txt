@@ -1,0 +1,6 @@
+streamlit
+groq
+gtts
+tempfile
+pathlib
+base64
