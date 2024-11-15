@@ -54,6 +54,16 @@ def convert_to_braille(text, grade_level):
     else:  # Grade 2
         return Grade2BrailleConverter().to_braille(text)
 
+# Custom CSS for white text in text areas
+st.markdown("""
+    <style>
+    .stTextArea textarea {
+        color: white !important;
+        background-color: rgba(0, 0, 0, 0.2) !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 # Streamlit UI
 st.title("LLaMA-3 Based Braille LLM")
 
@@ -63,9 +73,10 @@ with st.sidebar:
     
     # Text input
     input_text = st.text_area("Enter your text:", height=150)
+    # print(input_text)
     
     # Grade selector
-    grade_level = st.radio("Select Grade Level:", ["Grade 1", "Grade 2"])
+    grade_level = st.radio("Select UEB Grade Level:", ["Grade 1", "Grade 2"])
     
     # Temperature and max tokens sliders
     temperature = st.slider("Temperature:", min_value=0.0, max_value=1.0, value=0.7, step=0.1)
@@ -82,7 +93,7 @@ if 'braille_text' not in st.session_state:
 
 # Generate text when button is clicked
 if generate_button and input_text:
-    model_output = generate_text(input_text, temperature, max_tokens)
+    model_output = generate_text(input_text + ". Generate the response in a concise manner.", temperature, max_tokens)
     st.session_state.generated_text = model_output
     st.session_state.braille_text = convert_to_braille(model_output, grade_level)
 
@@ -91,7 +102,8 @@ st.header("Generated Output")
 output_container = st.container()
 
 with output_container:
-    # Display both Braille text
+    # Display both original and Braille text
+    st.text_area("Original Output:", value=st.session_state.generated_text, height=100, disabled=True)
     st.text_area("Braille Output:", value=st.session_state.braille_text, height=100, disabled=True)
     
     col1, col2 = st.columns(2)
