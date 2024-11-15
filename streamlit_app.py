@@ -54,12 +54,25 @@ def convert_to_braille(text, grade_level):
     else:  # Grade 2
         return Grade2BrailleConverter().to_braille(text)
 
-# Custom CSS for white text in text areas
+# Custom CSS for output boxes
 st.markdown("""
     <style>
-    .stTextArea textarea {
-        color: white !important;
-        background-color: rgba(0, 0, 0, 0.2) !important;
+    .output-box {
+        background-color: rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+        padding: 20px;
+        margin: 10px 0;
+        color: white;
+        font-family: monospace;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .output-label {
+        color: #4CAF50;
+        font-size: 1.1em;
+        margin-bottom: 5px;
+        font-weight: bold;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -73,7 +86,6 @@ with st.sidebar:
     
     # Text input
     input_text = st.text_area("Enter your text:", height=150)
-    # print(input_text)
     
     # Grade selector
     grade_level = st.radio("Select UEB Grade Level:", ["Grade 1", "Grade 2"])
@@ -102,9 +114,13 @@ st.header("Generated Output")
 output_container = st.container()
 
 with output_container:
-    # Display both original and Braille text
-    st.text_area("Original Output:", value=st.session_state.generated_text, height=100, disabled=True)
-    st.text_area("Braille Output:", value=st.session_state.braille_text, height=100, disabled=True)
+    # Display original output in custom box
+    st.markdown('<div class="output-label">Original Output:</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="output-box">{st.session_state.generated_text}</div>', unsafe_allow_html=True)
+    
+    # Display Braille output in custom box
+    st.markdown('<div class="output-label">Braille Output:</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="output-box">{st.session_state.braille_text}</div>', unsafe_allow_html=True)
     
     col1, col2 = st.columns(2)
     
